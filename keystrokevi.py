@@ -6,6 +6,21 @@ class App:
     def __init__(self, root):
         self.keys_history = []
 
+        self.space_char = '˽'
+        self.tab_char = '⭲'
+        self.escape_char = '⎋'
+        self.enter_char = '⏎'
+        self.shift_char = '⇪'
+        self.backspace_char = '⌫'
+        self.ctrl_char = 'Ctrl'
+        self.alt_char = 'Alt'
+        self.super_char = 'Super'
+
+        self.colors = dict(
+                disabled='#aaaaaa',
+                active='#000000'
+                )
+
         root.title('Keycast')
         root.attributes("-topmost", 1)
         #root.attributes('-type', 'dock')
@@ -18,51 +33,90 @@ class App:
         self.key_value = StringVar()
         key_label = ttk.Label(mainframe, textvariable=self.key_value)
 
-        self.shift_label = ttk.Label(mainframe, text='Sh', foreground='#CCCCCC')
-        self.control_label = ttk.Label(mainframe, text='Ct')
-        self.alt_label = ttk.Label(mainframe, text='Al')
-        self.super_label = ttk.Label(mainframe, text='Su')
+        shift_label = ttk.Label(mainframe, text=self.shift_char, foreground=self.colors['disabled'])
+        control_label = ttk.Label(mainframe, text=self.ctrl_char, foreground=self.colors['disabled'])
+        alt_label = ttk.Label(mainframe, text=self.alt_char, foreground=self.colors['disabled'])
+        super_label = ttk.Label(mainframe, text=self.super_char, foreground=self.colors['disabled'])
 
         key_label.grid(column=0, row=0)
-        self.shift_label.grid(column=1, row=1)
-        self.control_label.grid(column=2, row=1)
-        self.alt_label.grid(column=3, row=1)
-        self.super_label.grid(column=4, row=1)
+        shift_label.grid(column=1, row=1)
+        control_label.grid(column=2, row=1)
+        alt_label.grid(column=3, row=1)
+        super_label.grid(column=4, row=1)
+
+
+        self.specials = {
+                Key.shift: dict(
+                    char=self.shift_char,
+                    clean=True,
+                    label=shift_label
+                    ),
+                Key.ctrl: dict(
+                    char=self.ctrl_char,
+                    clean=True,
+                    label=control_label
+                    ),
+                Key.alt_r: dict(
+                    char=self.alt_char,
+                    clean=True,
+                    label=alt_label
+                    ),
+                Key.cmd: dict(
+                    char=self.super_char,
+                    clean=True,
+                    label=super_label
+                    ),
+
+                Key.esc: dict(
+                    char=self.escape_char,
+                    clean=False
+                    ),
+                Key.space: dict(
+                    char=self.space_char,
+                    clean=False
+                    ),
+                Key.enter: dict(
+                    char=self.enter_char,
+                    clean=False
+                    ),
+                Key.tab: dict(
+                    char=self.tab_char,
+                    clean=False
+                    ),
+                Key.backspace: dict(
+                    char=self.backspace_char,
+                    clean=False
+                    )
+                }
 
         self.start_listening()
 
-        self.space = '__'
-        self.shift_char = '||'
 
     def on_release(self, key):
         try:
-            if (key == Key.shift):
-                self.keys_history = []
-                self.shift_label['foreground'] = '#CCCCCC'
-                self.key_value.set(''.join(self.keys_history))
+            if key in self.specials:
+                special = self.specials.get(key)
+                if special.get('clean') == True:
+                    self.keys_history = []
+                    self.key_value.set(''.join(self.keys_history))
+                    special.get('label')['foreground'] = self.colors['disabled']
         except:
             pass
 
     def on_press(self, key):
         print(key)
-        # Key.space
-        # Key.enter
-        # Key.shift
-        # Key.ctrl
-        # Key.alt_r
-        # Key.esc
-        # Key.backspace
-        # Key.tab
         try:
-            if (key == Key.shift):
-                self.keys_history = []
-                self.shift_label['foreground'] = '#000000'
-                self.keys_history.append(self.shift_char)
+            if key in self.specials:
+                special = self.specials.get(key)
 
-            if (key == Key.space):
-                self.keys_history.append(self.space)
+                if special.get('clean') == True:
+                    self.keys_history = []
+                    special.get('label')['foreground'] = self.colors['active']
+
+                self.keys_history.append(special.get('char'))
             else:
                 self.keys_history.append(key.char)
+
         except:
             pass
 
