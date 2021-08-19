@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter.font import Font
 from pynput.keyboard import Listener, Key
 
 class App:
@@ -24,26 +25,40 @@ class App:
         root.title('Keycast')
         root.attributes("-topmost", 1)
         #root.attributes('-type', 'dock')
-        root.geometry('150x100+100+100')
+        #root.geometry('150x100+100+100')
         root.resizable(FALSE, FALSE)
 
-        mainframe = ttk.Frame(root)
+        mainframe = ttk.Frame(root, borderwidth=5, relief='ridge')
         mainframe.grid(column=0, row=0)
+        specials_frame = ttk.Frame(mainframe, relief='ridge', borderwidth=5)
 
         self.key_value = StringVar()
-        key_label = ttk.Label(mainframe, textvariable=self.key_value)
+        key_label_font = Font(size=20)
+        key_label = ttk.Label(
+                mainframe,
+                textvariable=self.key_value,
+                anchor='center',
+                background='red',
+                width=18,
+                font=key_label_font)
 
-        shift_label = ttk.Label(mainframe, text=self.shift_char, foreground=self.colors['disabled'])
-        control_label = ttk.Label(mainframe, text=self.ctrl_char, foreground=self.colors['disabled'])
-        alt_label = ttk.Label(mainframe, text=self.alt_char, foreground=self.colors['disabled'])
-        super_label = ttk.Label(mainframe, text=self.super_char, foreground=self.colors['disabled'])
+        shift_label = ttk.Label(specials_frame, anchor='center', text=self.shift_char, foreground=self.colors['disabled'])
+        control_label = ttk.Label(specials_frame, anchor='center', text=self.ctrl_char, foreground=self.colors['disabled'])
+        alt_label = ttk.Label(specials_frame, anchor='center', text=self.alt_char, foreground=self.colors['disabled'])
+        super_label = ttk.Label(specials_frame, anchor='center', text=self.super_char, foreground=self.colors['disabled'])
 
-        key_label.grid(column=0, row=0)
-        shift_label.grid(column=1, row=1)
-        control_label.grid(column=2, row=1)
-        alt_label.grid(column=3, row=1)
-        super_label.grid(column=4, row=1)
+        specials_frame.grid(column=0, row=1, sticky='we')
+        key_label.grid(column=0, row=0, sticky='we')
 
+        shift_label.grid(column=0, row=0)
+        control_label.grid(column=1, row=0)
+        alt_label.grid(column=2, row=0)
+        super_label.grid(column=3, row=0)
+
+        specials_frame.columnconfigure(0, weight=1)
+        specials_frame.columnconfigure(1, weight=1)
+        specials_frame.columnconfigure(2, weight=1)
+        specials_frame.columnconfigure(3, weight=1)
 
         self.specials = {
                 Key.shift: dict(
