@@ -18,8 +18,8 @@ class App:
         self.super_char = 'Super'
 
         self.colors = dict(
-                disabled='#aaaaaa',
-                active='#000000'
+                disabled='#515151',
+                active='#FFFFFF'
                 )
 
         root.title('Keycast')
@@ -27,25 +27,72 @@ class App:
         #root.attributes('-type', 'dock')
         #root.geometry('150x100+100+100')
         root.resizable(FALSE, FALSE)
+        #root.attributes('-alpha', 0.5)
 
-        mainframe = ttk.Frame(root, borderwidth=5, relief='ridge')
+        s = ttk.Style()
+        s.configure(
+                'App.TLabel',
+                background='#000000',
+                foreground='#FFFFFF',
+                padding=10,
+                )
+        s.configure(
+                'App.SpecialLabel.TLabel',
+                background='#000000',
+                )
+        s.configure(
+                'App.TFrame',
+                background='#000000',
+                )
+
+        mainframe = ttk.Frame(root)
         mainframe.grid(column=0, row=0)
-        specials_frame = ttk.Frame(mainframe, relief='ridge', borderwidth=5)
+        specials_frame = ttk.Frame(mainframe, style='App.TFrame')
+
+        font = Font(size=20)
 
         self.key_value = StringVar()
-        key_label_font = Font(size=20)
         key_label = ttk.Label(
                 mainframe,
-                textvariable=self.key_value,
                 anchor='center',
-                background='red',
-                width=18,
-                font=key_label_font)
+                font=font,
+                style='App.TLabel',
+                textvariable=self.key_value,
+                width=16,
+                )
 
-        shift_label = ttk.Label(specials_frame, anchor='center', text=self.shift_char, foreground=self.colors['disabled'])
-        control_label = ttk.Label(specials_frame, anchor='center', text=self.ctrl_char, foreground=self.colors['disabled'])
-        alt_label = ttk.Label(specials_frame, anchor='center', text=self.alt_char, foreground=self.colors['disabled'])
-        super_label = ttk.Label(specials_frame, anchor='center', text=self.super_char, foreground=self.colors['disabled'])
+        shift_label = ttk.Label(
+                specials_frame,
+                anchor='center',
+                font=font,
+                foreground=self.colors['disabled'],
+                style='App.SpecialLabel.TLabel',
+                text=self.shift_char,
+                )
+        control_label = ttk.Label(
+                specials_frame,
+                anchor='center',
+                font=font,
+                foreground=self.colors['disabled'],
+                style='App.SpecialLabel.TLabel',
+                text=self.ctrl_char,
+                )
+        alt_label = ttk.Label(
+                specials_frame,
+                anchor='center',
+                font=font,
+                foreground=self.colors['disabled'],
+                style='App.SpecialLabel.TLabel',
+                text=self.alt_char,
+                )
+        super_label = ttk.Label(
+                specials_frame,
+                anchor='center',
+                font=font,
+                foreground=self.colors['disabled'],
+                style='App.SpecialLabel.TLabel',
+                text=self.super_char,
+                )
 
         specials_frame.grid(column=0, row=1, sticky='we')
         key_label.grid(column=0, row=0, sticky='we')
@@ -105,7 +152,6 @@ class App:
                 }
 
         self.start_listening()
-
 
     def on_release(self, key):
         try:
